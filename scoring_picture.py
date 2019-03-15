@@ -27,8 +27,13 @@ def Scoring(model, x, y, w, h):
 if __name__ == '__main__':
     model = Sequential()
     model = load_model('my_model.h5')
-    imagePath = "dog.png"
+    imagePath = "004.jpg"
     frame = cv2.imread(imagePath)
+    sh=frame.shape
+    if sh[0]>1920 or sh[1]>1920:#图片过大时，缩小图片
+        frame = cv2.resize(frame, (1500 ,int(sh[0]*1500/sh[1])), interpolation=cv2.INTER_AREA)
+        print(frame.shape)
+        print("change size")
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
     # Detect faces in the image
