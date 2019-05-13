@@ -1,3 +1,5 @@
+# 模型应用
+# 为视频流中人脸打分
 # This script will detect faces via your webcam.
 # Tested with OpenCV3
 

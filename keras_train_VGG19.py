@@ -1,12 +1,13 @@
-#ResNet50模型训练网络
+#VGG19模型训练网络
 #import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import Dense, Activation, convolutional, pooling, Flatten, Dropout
+from keras.layers import Dense
 from keras.optimizers import Adam
 from keras.utils.np_utils import to_categorical
 import numpy as np
 from keras.utils import plot_model
-from keras.applications import ResNet50
+#from keras.applications import transfer_model50
+from keras.applications import VGG19
 import matplotlib.pyplot as plt
 
 #tf.test.gpu_device_name()
@@ -18,7 +19,7 @@ def show_history(history0):  # 绘制图像
     plt.ylabel('loss')
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Test'], loc='upper left')
-    plt.savefig('drive/app/1.jpg')
+    plt.savefig('drive/app/VGG19.jpg')
     plt.show()
 
 
@@ -42,25 +43,26 @@ x_test = X[5000:]
 y_test = Y[5000:]
 print("train data and test data")
 
-resnet = ResNet50(include_top=False,weights='imagenet',input_shape=(220,220,3), pooling='avg')
+transfer_model = VGG19(include_top=False,weights='imagenet',input_shape=(220,220,3), pooling='avg')
 model = Sequential()
-model.add(resnet)
+model.add(transfer_model)
 model.add(Dense(1))
 
-#model.layers[0].trainable = False#设置ResNet50不可训练
+#model.layers[0].trainable = False#设置transfer_model50不可训练
 
-print(resnet.summary())
+#print(transfer_model.summary())
 print(model.summary())
 
 print("compile")
-model.compile(loss='mean_squared_error', optimizer=Adam())
+#!!metrics是评价函数，详见文档
+model.compile(loss='mean_squared_error', optimizer=Adam(),metrics=['accuracy','mae','crossentropy'])
 
 print("fit")
-Hist = model.fit(x_train, y_train, epochs=8, batch_size=64)
+Hist = model.fit(x_train, y_train, epochs=2, batch_size=64)
 print(Hist.history)
 show_history(Hist)
 
 loss_and_metrics = model.evaluate(x_test, y_test, batch_size=128)
 print(loss_and_metrics)
 
-model.save('drive/app/my_model.h5')
+#model.save('drive/app/my_model.h5')

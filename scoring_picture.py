@@ -1,4 +1,5 @@
-# 给照片打分
+# 模型应用
+# 为照片中人脸打分
 import cv2
 from keras.models import Sequential
 from keras.models import load_model

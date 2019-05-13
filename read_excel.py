@@ -1,4 +1,7 @@
-#读取excel，转化为dict
+# 数据准备
+# 读取excel，转化为dict
+# dict格式 {'照片名.jpg':分数}
+
 import xlrd
 
 def get_data(filename, sheet):
