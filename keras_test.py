@@ -1,3 +1,4 @@
+#测试网络，输出loss图像
 from keras.models import Sequential
 from keras.models import load_model
 import numpy as np

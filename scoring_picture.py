@@ -28,7 +28,7 @@ def Scoring(model, x, y, w, h):
 if __name__ == '__main__':
     model = Sequential()
     model = load_model('my_model.h5')
-    imagePath = "004.jpg"
+    imagePath = "cw.jpg"
     frame = cv2.imread(imagePath)
     sh=frame.shape
     if sh[0]>1920 or sh[1]>1920:#图片过大时，缩小图片
@@ -48,7 +48,8 @@ if __name__ == '__main__':
         new_image = np.array([new_image])  # (1,220,220,3)
         print(new_image.shape)
         # k=Modle(model,new_image)
-        k = model.predict(new_image, batch_size=None, verbose=0, steps=None)
+        #注意！此处一定要/25，统一数量级！与训练时的神经网络保持一致
+        k = model.predict((new_image/25), batch_size=None, verbose=0, steps=None)
         print(k)
         text = str(k[0][0])
         cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 3)
