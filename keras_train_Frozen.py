@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 # tf.test.gpu_device_name()
 model_name = "Frozen"  # 模块命名，用于绘图时
-train_epochs0 = 2  # 设置训练轮次
+train_epochs0 = 10  # 设置训练轮次
 
 
 def show_history_mse(history0):  # 绘制mse图像
