@@ -39,7 +39,7 @@ print("train data and test data")
 resnet = ResNet50(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
 model = Sequential()
 model.add(resnet)
-model.add(Dense(1))
+model.add(Dense(1,name="aaa"))
 
 # 冻结------------------------------------------
 print("Frozen!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -52,21 +52,29 @@ print("compile")
 model.compile(loss='mean_squared_error', optimizer=Adam())
 
 print("fit")
-Hist = model.fit(x_train, y_train, epochs=2, batch_size=64, validation_data=(x_test, y_test))
+Hist = model.fit(x_train, y_train, epochs=1, batch_size=64, validation_data=(x_test, y_test))
+
+model.save_weights('drive/app/weight.h5')
 print(Hist.history)
 
 # 微调---------------------------------------------
 print("Finetuning!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 # 设置ResNet50可训练
-for layer in model.layers:
+
+model2=Sequential()
+model2.add(resnet)
+model2.add(Dense(1,name="aaa"))
+model2.load_weights('drive/app/weight.h5',by_name=True)
+for layer in model2.layers:
     layer.trainable = True
-print(model.summary())
+
+print(model2.summary())
 
 print("compile")
-model.compile(loss='mean_squared_error', optimizer=Adam())
+model2.compile(loss='mean_squared_error', optimizer=Adam())
 
 print("fit")
-Hist2 = model.fit(x_train, y_train, epochs=4, batch_size=64, validation_data=(x_test, y_test))
+Hist2 = model2.fit(x_train, y_train, epochs=1, batch_size=64, validation_data=(x_test, y_test))
 print(Hist2.history)
 
 # 输出图像---------------------------------------------
