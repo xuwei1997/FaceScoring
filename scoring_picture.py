@@ -28,7 +28,7 @@ def Scoring(model, x, y, w, h):
 if __name__ == '__main__':
     model = Sequential()
     model = load_model('my_model.h5')
-    imagePath = "cw.jpg"
+    imagePath = "tf.jpg"
     frame = cv2.imread(imagePath)
     sh=frame.shape
     if sh[0]>1920 or sh[1]>1920:#图片过大时，缩小图片
