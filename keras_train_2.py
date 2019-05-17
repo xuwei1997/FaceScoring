@@ -1,20 +1,19 @@
 # 各个不同网络的冻结与微调
 # 冻结和微调
 
-
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import Adam, SGD
 import numpy as np
-from keras.applications import ResNet50, VGG19, InceptionV3, MobileNetV2
+from keras.applications import ResNet50, VGG19, InceptionV3, MobileNet, NASNetMobile, Xception,DenseNet121
 import matplotlib.pyplot as plt
 import gc
 
 # tf.test.gpu_device_name()
-model_name = "VGG19"  # 选择使用哪种模型,ResNet50, VGG19, InceptionV3, MobileNetV2
+model_name = "DenseNet121"  # 选择使用哪种模型,ResNet50, VGG19, InceptionV3, MobileNet,NASNetMobile,DenseNet121
 train_epochs0 = 5  # 设置冻结训练轮次
 train_epochs1 = 7  # 设置微调训练轮次
-ad=0.0001 #微调时学习率 ，冻结时默认0.001
+ad = 0.0001  # 微调时学习率 ，冻结时默认0.001
 
 
 def show_history_mse2(history0, history1):  # 绘制mse图像
@@ -56,9 +55,18 @@ def change_model(model0):  # 选择模型
         tr_model = VGG19(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
     elif model0 == "InceptionV3":
         tr_model = InceptionV3(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
-    elif model0 == "MobileNetV2":
-        tr_model = MobileNetV2(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
+    # 不能用input_shape=(220, 220, 3)
+    #elif model0 == "MobileNet":
+    #   tr_model = MobileNet(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
+    #只能在weights=None时使用
+    #elif model0 == "NASNetMobile":
+    #    tr_model = NASNetMobile(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
+    elif model0 == "Xception":
+        tr_model = Xception(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
+    elif model0 == "DenseNet":
+        tr_model = DenseNet121(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
     return tr_model
+
 
 if __name__ == '__main__':
     x_train, y_train, x_test, y_test = prepare_data()
