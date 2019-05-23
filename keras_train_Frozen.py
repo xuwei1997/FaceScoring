@@ -1,11 +1,11 @@
 # 冻结
-# ResNet50模型训练网络
+# VGG19模型训练网络
 
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import Adam
 import numpy as np
-from keras.applications import ResNet50
+from keras.applications import ResNet50,VGG19
 import matplotlib.pyplot as plt
 
 # tf.test.gpu_device_name()
@@ -20,7 +20,7 @@ def show_history_mse(history0):  # 绘制mse图像
     plt.ylabel('loss')
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Test'], loc='upper left')
-    plt.savefig('drive/app/' + model_name + '_mse.jpg')
+    plt.savefig('drive/app/' + model_name + '_mse.jpg',api=200)
     plt.show()
 
 
@@ -48,9 +48,10 @@ x_test = X[5000:]
 y_test = Y[5000:]
 print("train data and test data")
 
-resnet = ResNet50(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
+#resnet = ResNet50(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
+vgg=VGG19(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
 model = Sequential()
-model.add(resnet)
+model.add(vgg)
 model.add(Dense(1))
 
 model.layers[0].trainable = False  # 设置ResNet50不可训练

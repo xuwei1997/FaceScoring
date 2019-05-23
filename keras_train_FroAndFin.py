@@ -1,15 +1,15 @@
 # 冻结和微调
-# ResNet50模型训练网络
+# VGG19模型训练网络
 
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import Adam,SGD
 import numpy as np
-from keras.applications import ResNet50
+from keras.applications import ResNet50,VGG19
 import matplotlib.pyplot as plt
 
 # tf.test.gpu_device_name()
-model_name = "FrozenAndFinetuning2"  # 模块命名，用于绘图时
+model_name = "FrozenAndFinetuning"  # 模块命名，用于绘图时
 train_epochs0 = 3  # 设置冻结训练轮次
 train_epochs1 = 7  # 设置微调训练轮次
 
@@ -38,7 +38,8 @@ x_test = X[5000:]
 y_test = Y[5000:]
 print("train data and test data")
 
-resnet = ResNet50(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
+#resnet = ResNet50(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
+resnet=VGG19(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
 model = Sequential()
 model.add(resnet)
 model.add(Dense(1,name="aaa"))
@@ -73,7 +74,7 @@ for layer in model2.layers:
 print(model2.summary())
 
 print("compile")
-model2.compile(loss='mean_squared_error', optimizer=Adam(lr=0.0005))
+model2.compile(loss='mean_squared_error', optimizer=Adam(lr=0.0002))
 
 print("fit")
 Hist2 = model2.fit(x_train, y_train, epochs=train_epochs1, batch_size=64, validation_data=(x_test, y_test))
