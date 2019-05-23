@@ -6,7 +6,6 @@ from keras.models import load_model
 import numpy as np
 
 
-
 def Modle(model0, test):
     k = model0.predict(test, batch_size=None, verbose=0, steps=None)
     print(k)
@@ -28,17 +27,22 @@ def Scoring(model, x, y, w, h):
 if __name__ == '__main__':
     model = Sequential()
     model = load_model('my_model.h5')
-    imagePath = "tf.jpg"
+    imagePath = "004.jpg"
     frame = cv2.imread(imagePath)
-    sh=frame.shape
-    if sh[0]>1920 or sh[1]>1920:#图片过大时，缩小图片
-        frame = cv2.resize(frame, (1500 ,int(sh[0]*1500/sh[1])), interpolation=cv2.INTER_AREA)
+    sh = frame.shape
+    print(sh)
+    if sh[0] > 1079:  # 图片过大时，缩小图片
+        frame = cv2.resize(frame, (int(sh[1] * 850 / sh[0]),850 ), interpolation=cv2.INTER_AREA)
         print(frame.shape)
-        print("change size")
+        print("change size 1")
+    elif sh[1] > 1920:
+        frame = cv2.resize(frame, (1500, int(sh[0]*1500/sh[1])), interpolation=cv2.INTER_AREA)
+        print(frame.shape)
+        print("change size 2")
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
     # Detect faces in the image
-    faces = faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(50, 50))
+    faces = faceCascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
     print("Found {0} faces!".format(len(faces)))
     print(frame.shape)
     print(faces)
@@ -48,8 +52,8 @@ if __name__ == '__main__':
         new_image = np.array([new_image])  # (1,220,220,3)
         print(new_image.shape)
         # k=Modle(model,new_image)
-        #注意！此处一定要/25，统一数量级！与训练时的神经网络保持一致
-        k = model.predict((new_image/25), batch_size=None, verbose=0, steps=None)
+        # 注意！此处一定要/25，统一数量级！与训练时的神经网络保持一致
+        k = model.predict((new_image / 25), batch_size=None, verbose=0, steps=None)
         print(k)
         text = str(k[0][0])
         cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 3)
