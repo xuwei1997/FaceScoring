@@ -26,8 +26,8 @@ def Scoring(model, x, y, w, h):
 
 if __name__ == '__main__':
     model = Sequential()
-    model = load_model('my_model.h5')
-    imagePath = "004.jpg"
+    model = load_model('DenseNet121_model.h5')
+    imagePath = "cl.jpg"
     frame = cv2.imread(imagePath)
     sh = frame.shape
     print(sh)

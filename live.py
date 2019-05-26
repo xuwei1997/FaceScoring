@@ -32,7 +32,7 @@ if __name__ == '__main__':
     cap = cv2.VideoCapture(0)
     faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
     model = Sequential()
-    model = load_model('my_model.h5')
+    model = load_model('ResNet50_model.h5')
     while (True):
         # Capture frame-by-frame
         ret, frame = cap.read()  # 读帧,frame是帧

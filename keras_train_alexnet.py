@@ -1,19 +1,49 @@
 # 各个不同网络的冻结与微调
 # 冻结和微调
+# AlexNet 网络
 
 from keras.models import Sequential
-from keras.layers import Dense
-from keras.optimizers import Adam, SGD
+from keras.optimizers import Adam
 import numpy as np
-from keras.applications import ResNet50, VGG19, InceptionV3, MobileNet, NASNetMobile, Xception,DenseNet121
+from keras.layers.core import Flatten, Dense, Dropout
+from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
 import matplotlib.pyplot as plt
 import gc
 
 # tf.test.gpu_device_name()
-model_name = "DenseNet121"  # 选择使用哪种模型,ResNet50, VGG19, InceptionV3, MobileNet,NASNetMobile,DenseNet121
-train_epochs0 = 5  # 设置冻结训练轮次
-train_epochs1 = 7  # 设置微调训练轮次
+model_name = "AlexNet"  # 选择使用哪种模型,ResNet50, VGG19, InceptionV3, MobileNet,NASNetMobile,DenseNet121
+train_epochs0 = 20  # 设置冻结训练轮次
+train_epochs1 = 15  # 设置微调训练轮次
 ad = 0.0001  # 微调时学习率 ，冻结时默认0.001
+
+
+def AlexNet(num_classses=1000):
+    model = Sequential()
+
+    model.add(ZeroPadding2D((2, 2), input_shape=(227, 227, 3)))
+    model.add(Convolution2D(64, (11, 11), strides=(4, 4), activation='relu'))
+    model.add(MaxPooling2D((3, 3), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((2, 2)))
+    model.add(Convolution2D(192, (5, 5), activation='relu'))
+    model.add(MaxPooling2D((3, 3), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(384, (3, 3), activation='relu'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, (3, 3), activation='relu'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, (3, 3), activation='relu'))
+    model.add(MaxPooling2D((3, 3), strides=(2, 2)))
+
+    model.add(Flatten())
+    model.add(Dense(4096, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(4096, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classses, activation='softmax'))
+
+    return model
 
 
 def show_history_mse2(history0, history1):  # 绘制mse图像
@@ -49,23 +79,11 @@ def prepare_data():  # 取数据
 
 
 def change_model(model0):  # 选择模型
-    if model0 == "ResNet50":
-        tr_model = ResNet50(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
-    elif model0 == "VGG19":
-        tr_model = VGG19(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
-    elif model0 == "InceptionV3":
-        tr_model = InceptionV3(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
-    # 不能用input_shape=(220, 220, 3)
-    #elif model0 == "MobileNet":
-    #   tr_model = MobileNet(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
-    #只能在weights=None时使用
-    #elif model0 == "NASNetMobile":
-    #    tr_model = NASNetMobile(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
-    elif model0 == "Xception":
-        tr_model = Xception(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
-    elif model0 == "DenseNet121":
-        tr_model = DenseNet121(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
-    return tr_model
+    model = AlexNet(num_classses=1000)
+    print(model)
+    # model.save_weights('alexnet_weights.h5')
+    model.load_weights('drive/app/alexnet_weights_pytorch.h5')
+    return model
 
 
 if __name__ == '__main__':
@@ -73,13 +91,14 @@ if __name__ == '__main__':
     transfer_model = change_model(model_name)
     # transfer_model = ResNet50(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
     model = Sequential()
+    model.add(Dense(input_shape=(220, 220, 3)))
     model.add(transfer_model)
     model.add(Dense(1, name="aaa"))
 
     # 冻结------------------------------------------
     print("Frozen!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     # 设置transfer_model不可训练
-    model.layers[0].trainable = False
+    model.layers[1].trainable = False
     # print(transfer_model.summary())
     print(model.summary())
 
@@ -96,6 +115,7 @@ if __name__ == '__main__':
     print("Finetuning!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     # 设置transfer_model可训练
     model2 = Sequential()
+    model2.add(Dense(input_shape=(220, 220, 3)))
     model2.add(transfer_model)
     model2.add(Dense(1, name="aaa"))
     model2.load_weights('drive/app/weight.h5', by_name=True)
