@@ -2,11 +2,12 @@
 # 冻结和微调
 # AlexNet 网络
 
-from keras.models import Sequential
+from keras.models import Sequential,Model
 from keras.optimizers import Adam
 import numpy as np
 from keras.layers.core import Flatten, Dense, Dropout
 from keras.layers.convolutional import Convolution2D, MaxPooling2D, ZeroPadding2D
+from keras.layers import GlobalAveragePooling2D, Input
 import matplotlib.pyplot as plt
 import gc
 
@@ -20,28 +21,28 @@ ad = 0.0001  # 微调时学习率 ，冻结时默认0.001
 def AlexNet(num_classses=1000):
     model = Sequential()
 
-    model.add(ZeroPadding2D((2, 2), input_shape=(227, 227, 3)))
-    model.add(Convolution2D(64, (11, 11), strides=(4, 4), activation='relu'))
-    model.add(MaxPooling2D((3, 3), strides=(2, 2)))
+    model.add(ZeroPadding2D((2, 2), input_shape=(220, 220, 3)))
+    model.add(Convolution2D(64, (11, 11), strides=(4, 4), activation='relu',name='1'))
+    model.add(MaxPooling2D((3, 3), strides=(2, 2),name='2'))
 
-    model.add(ZeroPadding2D((2, 2)))
-    model.add(Convolution2D(192, (5, 5), activation='relu'))
-    model.add(MaxPooling2D((3, 3), strides=(2, 2)))
+    model.add(ZeroPadding2D((2, 2),name='3'))
+    model.add(Convolution2D(192, (5, 5), activation='relu',name='4'))
+    model.add(MaxPooling2D((3, 3), strides=(2, 2),name='5'))
 
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(384, (3, 3), activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, (3, 3), activation='relu'))
-    model.add(ZeroPadding2D((1, 1)))
-    model.add(Convolution2D(256, (3, 3), activation='relu'))
-    model.add(MaxPooling2D((3, 3), strides=(2, 2)))
+    model.add(ZeroPadding2D((1, 1),name='6'))
+    model.add(Convolution2D(384, (3, 3), activation='relu',name='7'))
+    model.add(ZeroPadding2D((1, 1),name='8'))
+    model.add(Convolution2D(256, (3, 3), activation='relu',name='9'))
+    model.add(ZeroPadding2D((1, 1),name='10'))
+    model.add(Convolution2D(256, (3, 3), activation='relu',name='11'))
+    model.add(MaxPooling2D((3, 3), strides=(2, 2),name='12'))
 
     model.add(Flatten())
     model.add(Dense(4096, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(4096, activation='relu'))
+    model.add(Dense(4096, activation='relu',name='15'))
     model.add(Dropout(0.5))
-    model.add(Dense(num_classses, activation='softmax'))
+    model.add(Dense(num_classses, activation='softmax',name='16'))
 
     return model
 
@@ -82,23 +83,27 @@ def change_model(model0):  # 选择模型
     model = AlexNet(num_classses=1000)
     print(model)
     # model.save_weights('alexnet_weights.h5')
-    model.load_weights('drive/app/alexnet_weights_pytorch.h5')
+    model.load_weights('drive/app/alexnet_weights_2.h5',by_name=True)
     return model
 
 
 if __name__ == '__main__':
     x_train, y_train, x_test, y_test = prepare_data()
     transfer_model = change_model(model_name)
-    # transfer_model = ResNet50(include_top=False, weights='imagenet', input_shape=(220, 220, 3), pooling='avg')
     model = Sequential()
-    model.add(Dense(input_shape=(220, 220, 3)))
     model.add(transfer_model)
+    model.add(Dense(512, activation='relu',name="bbb"))
     model.add(Dense(1, name="aaa"))
+
+    # Inp = Input((220, 220, 3))
+    # x = transfer_model(Inp)
+    # y = Dense(1, name="aaa")(x)
+    # model = Model(inputs=Inp, outputs=y)
 
     # 冻结------------------------------------------
     print("Frozen!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     # 设置transfer_model不可训练
-    model.layers[1].trainable = False
+    model.layers[0].trainable = False
     # print(transfer_model.summary())
     print(model.summary())
 
@@ -115,8 +120,8 @@ if __name__ == '__main__':
     print("Finetuning!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     # 设置transfer_model可训练
     model2 = Sequential()
-    model2.add(Dense(input_shape=(220, 220, 3)))
     model2.add(transfer_model)
+    model2.add(Dense(512, activation='relu', name="bbb"))
     model2.add(Dense(1, name="aaa"))
     model2.load_weights('drive/app/weight.h5', by_name=True)
     for layer in model2.layers:
