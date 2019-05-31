@@ -27,7 +27,7 @@ def Scoring(model, x, y, w, h):
 if __name__ == '__main__':
     model = Sequential()
     model = load_model('DenseNet121_model.h5')
-    imagePath = "cl.jpg"
+    imagePath = "dlrb.jpg"
     frame = cv2.imread(imagePath)
     sh = frame.shape
     print(sh)
@@ -55,6 +55,9 @@ if __name__ == '__main__':
         # 注意！此处一定要/25，统一数量级！与训练时的神经网络保持一致
         k = model.predict((new_image / 25), batch_size=None, verbose=0, steps=None)
         print(k)
+        print("!!!!!")
+        j = model.predict((new_image / 25), batch_size=None, verbose=0, steps=None)
+        print (j)
         text = str(k[0][0])
         cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 3)
         cv2.putText(frame, text, (x, y), cv2.FONT_HERSHEY_DUPLEX, 2, (0, 0, 255), 1)
