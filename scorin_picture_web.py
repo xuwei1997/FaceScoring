@@ -2,14 +2,11 @@
 # coding:utf-8
 
 from flask import Flask, render_template, request, redirect, url_for, make_response, jsonify
-from werkzeug.utils import secure_filename
 import os
 import cv2
 from keras.models import Sequential
 from keras.models import load_model
 import numpy as np
-import threading
-from queue import Queue
 import time
 from datetime import timedelta
 
@@ -47,9 +44,9 @@ def sc(imagePath,current):
         print("!!!!!")
         #j = model.predict((new_image / 25), batch_size=None, verbose=0, steps=None)
         #print (j)
-        text = str(k[0][0])
+        text = str(round(k[0][0],3))
         cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 3)
-        cv2.putText(frame, text, (x, y), cv2.FONT_HERSHEY_DUPLEX, 2, (0, 0, 255), 1)
+        cv2.putText(frame, text, (x, y), cv2.FONT_HERSHEY_DUPLEX, 1.5, (0, 0, 255), 1)
     cv2.imwrite('static/images2/'+current+'.png',frame)
     #cv2.imshow('frame', frame)
     #cv2.waitKey(0)
@@ -106,4 +103,4 @@ if __name__ == '__main__':
     test = np.zeros((1, 220, 220, 3))
     k = model.predict(test, batch_size=None, verbose=0, steps=None)
     print(k)
-    app.run(host='172.20.10.5', port=8987, debug=False)
+    app.run(host='localhost', port=8987, debug=False)

@@ -1,0 +1,61 @@
+html{
+    height:100%;
+    width: 100%;
+    padding:0;
+    margin:0;
+}
+body{
+    height:100%;
+    width: 100%;
+    padding:0;
+    margin:0;
+    background: url("http://www.51pptmoban.com/d/file/2017/04/22/17b3559220f03fb0c009f0c21944dd7c.jpg") no-repeat center center;
+    background-size: 100% 100%;
+}
+.a-upload {
+    overflow: hidden;
+}
+.file {
+    position: absolute;
+    margin-bottom: 50px;
+    font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    cursor: pointer
+}
+.div-inline{ display:inline}
+.all {
+    width: 100%;
+    margin: auto
+}
+.title {
+    margin-top: 50px;
+    text-align: center;
+}
+.formbody {
+    width:100%;
+    text-align:center
+}
+.yuantu {
+    text-align: center;
+    width: 50%;
+    float: left
+}
+.pingfentu {
+    text-align: center;
+    width: 50%;
+    float: right
+}
+
+.img1 {
+    height: 50%;
+    width: 50%;
+    float: left;
+}
+.img2 {
+    height:50%;
+    width:50%;
+    float: right
+}
