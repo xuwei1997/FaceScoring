@@ -8,10 +8,16 @@
 
 3.picture_to_numpy 将照片保存为numpy数组
 
-4.keras_train 训练神经网络
+4.keras_trai_Frozen 冻结
 
-5.keras_train_ResNet50 利用ResNet50模型进行迁移学习
+5.keras_trai_Finetuning 冻结
 
-5.scoring_picture 为照片中人脸打分
+6.keras_trai_FroAndFin 冻结后微调
 
-6.live 为摄像头实时视频中人脸打分
+7.keras_train_2 探究不同源模型的性能
+
+8.scoring_picture 为照片中人脸打分
+
+9.keras_test 测试神经网络
+
+10.live 为摄像头实时视频中人脸打分
